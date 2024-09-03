@@ -1,5 +1,6 @@
 package com.kendimerah.marketplace.controller;
 
+import com.kendimerah.marketplace.dto.CartResponseDTO;
 import com.kendimerah.marketplace.entity.Cart;
 import com.kendimerah.marketplace.entity.CartItem;
 import com.kendimerah.marketplace.entity.User;
@@ -10,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
+import java.math.BigDecimal;
 
 @RestController
 @RequestMapping("/api/cart")
@@ -25,11 +28,13 @@ public class CartController {
     private ProductService productService;
 
     @GetMapping
-    public ResponseEntity<Cart> getCart(Authentication authentication) {
+    public ResponseEntity<CartResponseDTO> getCart(Authentication authentication) {
         User user = userService.findByEmail(authentication.getName())
                 .orElseThrow(() -> new RuntimeException("User not found"));
         Cart cart = cartService.getOrCreateCart(user);
-        return ResponseEntity.ok(cart);
+        BigDecimal total = cartService.calculateCartTotal(cart);
+        CartResponseDTO response = new CartResponseDTO(cart, total);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/add")
@@ -66,5 +71,17 @@ public class CartController {
         Cart cart = cartService.getOrCreateCart(user);
         cartService.clearCart(cart);
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/reduce")
+    public ResponseEntity<CartItem> reduceQuantity(
+            Authentication authentication,
+            @RequestParam Long productId,
+            @RequestParam int quantity) {
+        User user = userService.findByEmail(authentication.getName())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        Cart cart = cartService.getOrCreateCart(user);
+        CartItem updatedCartItem = cartService.reduceQuantity(cart, productId, quantity);
+        return ResponseEntity.ok(updatedCartItem);
     }
 }

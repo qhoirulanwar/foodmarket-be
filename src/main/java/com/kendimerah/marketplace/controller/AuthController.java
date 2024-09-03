@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
 import java.io.Serializable;
+import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -56,9 +59,10 @@ public class AuthController {
         }
 
         // Create new user's account
-        User user = new User(signUpRequest.getName(), 
-                             signUpRequest.getEmail(),
-                             signUpRequest.getPassword());
+        User user = new User();
+        user.setName(signUpRequest.getName());
+        user.setEmail(signUpRequest.getEmail());
+        user.setPassword(signUpRequest.getPassword());
 
         user.setRole(Role.ROLE_USER);
         userService.registerUser(user);
@@ -67,59 +71,22 @@ public class AuthController {
     }
 }
 
+@Data
 class LoginRequest {
     private String email;
     private String password;
-
-    // Getters and setters
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
 }
 
+@Data
 class SignupRequest {
     private String name;
     private String email;
     private String password;
-
-    // Getters and setters
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
 }
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 class JwtResponse implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -135,63 +102,12 @@ class JwtResponse implements Serializable {
         this.username = username;
         this.email = email;
     }
-
-    // Getters and setters
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
 }
 
+@Data
+@AllArgsConstructor
 class MessageResponse implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private String message;
-
-    public MessageResponse(String message) {
-        this.message = message;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
 }
