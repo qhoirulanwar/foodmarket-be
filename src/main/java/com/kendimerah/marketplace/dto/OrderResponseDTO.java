@@ -22,7 +22,10 @@ public class OrderResponseDTO {
     private String userEmail;
     private List<OrderItemDTO> items;
     private BigDecimal totalAmount;
+    private BigDecimal shippingCost;
+    private String shippingName;
     private String shippingAddress;
+    private BigDecimal totalPayment;
     private OrderStatus status;
     private LocalDateTime createdAt;
 
@@ -34,7 +37,10 @@ public class OrderResponseDTO {
                 .map(OrderItemDTO::new)
                 .collect(Collectors.toList());
         this.totalAmount = order.getTotalAmount();
+        this.shippingCost = order.getShippingCost();
+        this.shippingName = order.getShippingName();
         this.shippingAddress = order.getShippingAddress();
+        this.totalPayment = order.getTotalPayment();
         this.status = order.getStatus();
         this.createdAt = order.getOrderDate();
     }

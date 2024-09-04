@@ -42,6 +42,15 @@ public class Order {
     private BigDecimal totalAmount;
 
     @Column(nullable = false)
+    private BigDecimal totalPayment;
+
+    @Column(nullable = false)
+    private BigDecimal shippingCost;
+
+    @Column(nullable = false)
+    private String shippingName;
+
+    @Column(nullable = false)
     private String shippingAddress;
 
     // Helper methods

@@ -23,12 +23,14 @@ public class OrderService {
     @Autowired
     private CartService cartService;
 
-    public Order createOrder(User user, Cart cart, String shippingAddress) {
+    public Order createOrder(User user, Cart cart, String shippingAddress, BigDecimal shippingCost, String shippingName) {
         Order order = new Order();
         order.setUser(user);
         order.setOrderDate(LocalDateTime.now());
         order.setStatus(OrderStatus.PENDING);
         order.setShippingAddress(shippingAddress);
+        order.setShippingCost(shippingCost);
+        order.setShippingName(shippingName);
 
         BigDecimal totalAmount = BigDecimal.ZERO;
         List<OrderItem> orderItems = cart.getCartItems().stream()
@@ -47,6 +49,7 @@ public class OrderService {
         }
 
         order.setTotalAmount(totalAmount);
+        order.setTotalPayment(totalAmount.add(shippingCost));
         order.setOrderItems(orderItems);
 
         Order savedOrder = orderRepository.save(order);

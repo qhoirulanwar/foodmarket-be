@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,11 +32,13 @@ public class OrderController {
     @PostMapping
     public ResponseEntity<OrderResponseDTO> createOrder(
             Authentication authentication,
-            @RequestParam String shippingAddress) {
+            @RequestParam String shippingAddress,
+            @RequestParam BigDecimal shippingCost,
+            @RequestParam String shippingName) {
         User user = userService.findByEmail(authentication.getName())
                 .orElseThrow(() -> new RuntimeException("User not found"));
         Cart cart = cartService.getOrCreateCart(user);
-        Order order = orderService.createOrder(user, cart, shippingAddress);
+        Order order = orderService.createOrder(user, cart, shippingAddress, shippingCost, shippingName);
         return ResponseEntity.ok(new OrderResponseDTO(order));
     }
 
